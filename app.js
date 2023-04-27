@@ -6,7 +6,7 @@ const mongoose = require('mongoose')
 
 mongoose.connect('mongodb+srv://root:Haaris8785@cluster0.walzl.mongodb.net/test');
 
-const contractSchema = new mongoose.SchemaType({
+const contractSchema = new mongoose.Schema({
     productName: {
         type: String,
         required: true
@@ -21,7 +21,24 @@ const contractSchema = new mongoose.SchemaType({
     },
 })
 
-const contractModel = mongoose.model('contracts', contractSchema);
+const locationSchema = new mongoose.Schema({
+    LocationName: {
+        type: String,
+        required: true
+    },
+    LocationID: {
+        type: String,
+        required: true
+    },
+    contractAddress: {
+        type: String,
+        required: true
+    },
+})
+
+
+
+const locationModel = mongoose.model('locations', locationSchema);
 
 
 // Use the api keys by providing the strings directly 
@@ -45,8 +62,22 @@ app.get('/add-product', (req, res) => {
     return res.sendFile(path.join(__dirname, 'views', 'addproduct.html'));
 })
 
-app.get('/console', (req, res) => {
-    console.log("Hello")
+app.post('/add-location', async (req, res) => {
+    const locationName = req.body.locationName;
+    const locationID = req.body.locationID;
+    const locationAddress = req.body.locationAddress;
+
+    await locationModel({
+        LocationName: locationName,
+        LocationID: locationID,
+        contractAddress: locationAddress
+    }).save();
+
+    console.log("Record Added");
+})
+
+app.get('/checklocation', async (req, res) => {
+
 })
 
 app.get('/getData', async (req, res) => {
